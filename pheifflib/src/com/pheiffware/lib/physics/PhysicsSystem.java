@@ -8,8 +8,9 @@ import java.util.Random;
 import com.pheiffware.lib.log.Log;
 import com.pheiffware.lib.physics.entity.Entity;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntity;
+import com.pheiffware.lib.simulation.Simulation;
 
-public class PhysicsSystem
+public class PhysicsSystem implements Simulation<List<Entity>>
 {
 	private static final int maxNumEntities = 1000;
 	private int numEntities;
@@ -43,39 +44,8 @@ public class PhysicsSystem
 		totalRunTime = 0f;
 	}
 
-	/**
-	 * Copies the state of all entities, at least well enough that they can be
-	 * drawn and are safe for access (may not be full serialization).
-	 */
-	public List<Entity> copyForRender()
-	{
-		try
-		{
-			List<Entity> copyOfEntities = new ArrayList<Entity>(entities.length
-					+ staticEntities.length + dynamicEntities.length);
-			for (int i = 0; i < numEntities; i++)
-			{
-				copyOfEntities.add(entities[i].copyForRender());
-			}
-			for (int i = 0; i < numStaticEntities; i++)
-			{
-				copyOfEntities.add(staticEntities[i].copyForRender());
-			}
-			for (int i = 0; i < numDynamicEntities; i++)
-			{
-				copyOfEntities.add(dynamicEntities[i].copyForRender());
-			}
-			return copyOfEntities;
-		}
-		catch (Exception e)
-		{
-			Log.error("FAIL!", e);
-			System.exit(0);
-			return new ArrayList<Entity>();
-		}
-	}
-
-	public void update(double elapsedTime)
+	@Override
+	public void timeStep(double absoluteTime, double elapsedTime)
 	{
 		try
 		{
@@ -97,6 +67,39 @@ public class PhysicsSystem
 			Log.error("FAIL!", e);
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * Copies the state of all entities, at least well enough that they can be
+	 * drawn and are safe for access (may not be full serialization).
+	 */
+	@Override
+	public List<Entity> copyState()
+	{
+		try
+		{
+			List<Entity> copyOfEntities = new ArrayList<Entity>(entities.length + staticEntities.length + dynamicEntities.length);
+			for (int i = 0; i < numEntities; i++)
+			{
+				copyOfEntities.add(entities[i].copyForRender());
+			}
+			for (int i = 0; i < numStaticEntities; i++)
+			{
+				copyOfEntities.add(staticEntities[i].copyForRender());
+			}
+			for (int i = 0; i < numDynamicEntities; i++)
+			{
+				copyOfEntities.add(dynamicEntities[i].copyForRender());
+			}
+			return copyOfEntities;
+		}
+		catch (Exception e)
+		{
+			Log.error("FAIL!", e);
+			System.exit(0);
+			return new ArrayList<Entity>();
+		}
+
 	}
 
 	private void runAI(double elapsedTime)
@@ -127,8 +130,7 @@ public class PhysicsSystem
 		}
 	}
 
-	private void resolveCollisions(double elapsedTime)
-			throws InteractionException
+	private void resolveCollisions(double elapsedTime) throws InteractionException
 	{
 		for (int i = 0; i < numStaticEntities; i++)
 		{
@@ -197,8 +199,7 @@ public class PhysicsSystem
 	 */
 	public void randomizeEntityProcessingOrder_TESTING_ONLY(Random random)
 	{
-		List<PhysicalEntity> physicalEntityList = new ArrayList<PhysicalEntity>(
-				numDynamicEntities);
+		List<PhysicalEntity> physicalEntityList = new ArrayList<PhysicalEntity>(numDynamicEntities);
 		for (int i = 0; i < numDynamicEntities; i++)
 		{
 			physicalEntityList.add(dynamicEntities[i]);

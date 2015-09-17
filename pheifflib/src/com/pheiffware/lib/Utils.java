@@ -87,4 +87,9 @@ public class Utils
 			throw new RuntimeException("Cannot clean byte buffer");
 		}
 	}
+
+	public static final double getTimeElapsed(long earlierTimeStamp)
+	{
+		return (System.nanoTime() - earlierTimeStamp) / 1000000000.0;
+	}
 }
