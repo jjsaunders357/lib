@@ -5,11 +5,10 @@ public interface Simulation<SimState>
 	/**
 	 * Called to updates the simulation by a give size time step.
 	 * 
-	 * @param absoluteTime
 	 * @param elapsedTime
 	 *            Time since last update.
 	 */
-	public void timeStep(double absoluteTime, double elapsedTime);
+	public void performTimeStep(double elapsedTime);
 
 	/**
 	 * Returns a snap shot of the simulation. The SimulationManager prevents this

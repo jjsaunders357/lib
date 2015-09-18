@@ -45,7 +45,7 @@ public class PhysicsSystem implements Simulation<List<Entity>>
 	}
 
 	@Override
-	public void timeStep(double absoluteTime, double elapsedTime)
+	public void performTimeStep(double elapsedTime)
 	{
 		try
 		{
