@@ -1,15 +1,28 @@
 package com.pheiffware.lib.log;
 
+/**
+ * Any code which logs goes through here.  The assumption is that if you are interested in logging the 1st line of your main() method will be:
+ * Log.install(logHandler)
+ * where logHandler is a handler for your specific platform (PC, android, etc).
+ * @author Steve
+ *
+ */
 public class Log
 {
+	private static LogHandler instance = new NullLogHandler();
+
+	public static void install(LogHandler instance)
+	{
+		Log.instance = instance;
+	}
 
 	public static void error(String message, Exception e)
 	{
-		// System.out.println(message);
+		instance.error(message, e);
 	}
 
 	public static void info(String message)
 	{
-		// System.out.println(message);
+		instance.info(message);
 	}
 }
