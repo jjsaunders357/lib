@@ -7,6 +7,8 @@ package com.pheiffware.lib;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,8 +32,7 @@ import java.nio.file.Path;
 public class Utils
 {
 	@SuppressWarnings("unchecked")
-	public static <T> T loadObj(String path, Class<T> cls)
-			throws FileNotFoundException, IOException, ClassNotFoundException
+	public static <T> T loadObj(String path, Class<T> cls) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
 		try (InputStream file = new FileInputStream(path);
 				InputStream buffer = new BufferedInputStream(file);
@@ -52,12 +53,37 @@ public class Utils
 		}
 	}
 
+	/**
+	 * Quick and dirty way to copy and object using serialization.  THIS IS NOT EFFICIENT AT ALL.
+	 * @param object
+	 * @return
+	 */
+	public static <T> T copyObj(T object)
+	{
+		try
+		{
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			ObjectOutput output = new ObjectOutputStream(buffer);
+			output.writeObject(object);
+			ByteArrayInputStream bais = new ByteArrayInputStream(buffer.toByteArray());
+			return (T) new ObjectInputStream(bais).readObject();
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new AssertionError("Copy Error", e);
+		}
+		catch (IOException e)
+		{
+			throw new AssertionError("Copy Error", e);
+		}
+
+	}
+
 	public static String loadFileAsString(Path path) throws IOException
 	{
 		long size = Files.size(path);
 		char[] fileContents = new char[(int) size];
-		try (BufferedReader reader = Files.newBufferedReader(path,
-				Charset.forName("UTF-8")))
+		try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("UTF-8")))
 		{
 			reader.read(fileContents);
 		}
@@ -80,9 +106,7 @@ public class Utils
 			cleanMethod.setAccessible(true);
 			cleanMethod.invoke(cleaner);
 		}
-		catch (NoSuchMethodException | SecurityException
-				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException exception)
+		catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException exception)
 		{
 			throw new RuntimeException("Cannot clean byte buffer");
 		}
