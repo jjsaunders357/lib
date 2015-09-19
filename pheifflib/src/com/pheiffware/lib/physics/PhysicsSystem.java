@@ -220,4 +220,10 @@ public class PhysicsSystem implements Simulation<List<Entity>>
 	{
 		return numDynamicEntities;
 	}
+
+	@Override
+	public void applyExternalInput(String key, Object value)
+	{
+		// Do nothing by default
+	}
 }

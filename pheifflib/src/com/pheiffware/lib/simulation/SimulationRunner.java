@@ -1,5 +1,7 @@
 package com.pheiffware.lib.simulation;
 
+import com.pheiffware.lib.Utils;
+
 /**
  * Manages a simulation by running it in a background thread.  This deals with the threading/synchronization issues related to this.  
  * How the simulation is actually run is done by the runSimulation() method calling this class' timeStep() method as appropriate.
@@ -37,11 +39,39 @@ public abstract class SimulationRunner<SimState> implements Runnable
 	protected abstract void runSimulation() throws SimStoppedException;
 
 	/**
-	 * Performs a check to see if another thread is trying to do something.  It will block until the other thread is done and wakes this 
-	 * back up.  There are only 2 such actions which other threads can take: getState and stop.  
-	 * This method will throw a stop exception when finished if another thread initiated a stop.
+	 * Updates one time step of given size.
+	 * 
+	 * @param timeStep
+	 */
+	protected final void performTimeStep(double timeStep)
+	{
+		elapsedSimTime += timeStep;
+		simulation.performTimeStep(timeStep);
+	}
 
-	 * SHOULD ONLY BE CALLED FROM WITHIN synchronized(this) BLOCKS.
+	/**
+	 * Enforce delay if simulation is running too fast.
+	 * @throws SimStoppedException 
+	 */
+	protected final void throttleAndHandleSignals(double maxSimTimePerSecond) throws SimStoppedException
+	{
+		// Don't throttle at all if this is inf.
+		if (maxSimTimePerSecond == Double.POSITIVE_INFINITY)
+		{
+			handleSignals();
+			return;
+		}
+		double realTimeElapsed;
+		do
+		{
+			handleSignals();
+			realTimeElapsed = Utils.getTimeElapsed(getRealStartTime());
+		} while (getElapsedSimTime() / realTimeElapsed > maxSimTimePerSecond);
+	}
+
+	/**
+	 * Should be called periodically while performing the simulation to allow outside threads to interact with the simulation.
+	 * For example: getState() 
 	 * @throws SimStoppedException Will be thrown if a request to stop was made.
 	 */
 	protected final void handleSignals() throws SimStoppedException
@@ -62,17 +92,6 @@ public abstract class SimulationRunner<SimState> implements Runnable
 				throw new SimStoppedException();
 			}
 		}
-	}
-
-	/**
-	 * Updates one time step of given size.
-	 * 
-	 * @param timeStep
-	 */
-	protected final void performTimeStep(double timeStep)
-	{
-		elapsedSimTime += timeStep;
-		simulation.performTimeStep(timeStep);
 	}
 
 	/**
@@ -111,6 +130,17 @@ public abstract class SimulationRunner<SimState> implements Runnable
 			lock.notify();
 		}
 		return state;
+	}
+
+	public void applyExternalInput(String key, Object value)
+	{
+		signalFlag = true;
+		synchronized (lock)
+		{
+			signalFlag = false;
+			simulation.applyExternalInput(key, value);
+			lock.notify();
+		}
 	}
 
 	/**
@@ -176,4 +206,5 @@ public abstract class SimulationRunner<SimState> implements Runnable
 	{
 		return elapsedSimTime;
 	}
+
 }

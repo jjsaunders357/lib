@@ -1,26 +1,28 @@
 package com.pheiffware.lib.simulation;
 
-import com.pheiffware.lib.Utils;
 
 public class RealTimeSimulationRunner<SimState> extends SimulationRunner<SimState>
 {
 	private final double maxTimeStep;
 	private final double minTimeStep;
-	private final double simToRealTimeRatio;
+	private final double simTimePerSecond;
 
-	public RealTimeSimulationRunner(Simulation<SimState> simulation, double maxTimeStep, double minTimeStep, double simToRealTimeRatio)
+	public RealTimeSimulationRunner(Simulation<SimState> simulation, double maxSimTimePerSecond, double maxTimeStep, double minTimeStep)
 	{
 		super(simulation);
 		this.maxTimeStep = maxTimeStep;
 		this.minTimeStep = minTimeStep;
-		this.simToRealTimeRatio = simToRealTimeRatio;
+		this.simTimePerSecond = maxSimTimePerSecond;
 	}
 
 	protected void runSimulation() throws SimStoppedException
 	{
+		long lastTimeStamp = System.nanoTime();
 		while (true)
 		{
-			double timeStep = Utils.getTimeElapsed(getRealStartTime()) * simToRealTimeRatio;
+			long nextTimeStamp = System.nanoTime();
+			double timeStep = simTimePerSecond * (nextTimeStamp - lastTimeStamp) / 10000000000.0;
+			lastTimeStamp = nextTimeStamp;
 
 			if (timeStep > maxTimeStep)
 			{
@@ -31,7 +33,7 @@ public class RealTimeSimulationRunner<SimState> extends SimulationRunner<SimStat
 				timeStep = minTimeStep;
 			}
 			performTimeStep(timeStep);
-			handleSignals();
+			throttleAndHandleSignals(simTimePerSecond);
 		}
 	}
 }

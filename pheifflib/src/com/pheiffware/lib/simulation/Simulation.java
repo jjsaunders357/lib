@@ -11,10 +11,10 @@ public interface Simulation<SimState>
 	public void performTimeStep(double elapsedTime);
 
 	/**
-	 * Returns a snap shot of the simulation. The SimulationManager prevents this
+	 * Returns a snap shot of the simulation. SimulationManagers prevents this
 	 * from being called simultaneously with timeStep(). However, the returned
-	 * state must not reference anything touched by timeStep() as after this is
-	 * called, update will continue to execute.
+	 * state must not reference anything touched by timeStep() (which is not static) 
+	 * as after this is called, update will continue to execute.
 	 * 
 	 * This is typically used for rendering the current state of the simulation.  
 	 * 
@@ -23,4 +23,13 @@ public interface Simulation<SimState>
 	 * @return
 	 */
 	public SimState copyState();
+
+	/**
+	 * Used to apply an external input, such as a key press, to the simulation state.  SimulationManagers prevent this
+	 * from being called simultaneously with timeStep().  However, any object passed in should be copied unless it will 
+	 * not be used externally while the simulation is running.
+	 * @param key
+	 * @param value
+	 */
+	public void applyExternalInput(String key, Object value);
 }
