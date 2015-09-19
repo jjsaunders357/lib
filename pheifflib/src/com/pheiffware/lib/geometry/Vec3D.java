@@ -4,12 +4,16 @@ import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import java.io.Serializable;
+
 /**
  * Represents a 3d vector/point. For efficiency (especially on Android), this
  * class is mutable.
  */
-public class Vec3D
+public class Vec3D implements Serializable
 {
+	private static final long serialVersionUID = 377896764022380713L;
+
 	public static final Vec3D add(final Vec3D v1, final Vec3D v2)
 	{
 		return new Vec3D(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
@@ -27,8 +31,7 @@ public class Vec3D
 
 	public static final Vec3D cross(final Vec3D v1, final Vec3D v2)
 	{
-		return new Vec3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z,
-				v1.x * v2.y - v1.y * v2.x);
+		return new Vec3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
 	}
 
 	/**
@@ -41,8 +44,7 @@ public class Vec3D
 	 */
 	public static final double subDot(Vec3D vec1, Vec3D vec2, Vec3D dotVec)
 	{
-		return (vec1.x - vec2.x) * dotVec.x + (vec1.y - vec2.y) * dotVec.y
-				+ (vec1.z - vec2.z) * dotVec.z;
+		return (vec1.x - vec2.x) * dotVec.x + (vec1.y - vec2.y) * dotVec.y + (vec1.z - vec2.z) * dotVec.z;
 	}
 
 	public static final Vec3D scale(Vec3D vec, double scale)
@@ -66,8 +68,7 @@ public class Vec3D
 	public static Vec3D normalize(final Vec3D v1)
 	{
 		final double magnitude = v1.magnitude();
-		final Vec3D result = new Vec3D(v1.x / magnitude, v1.y / magnitude, v1.z
-				/ magnitude);
+		final Vec3D result = new Vec3D(v1.x / magnitude, v1.y / magnitude, v1.z / magnitude);
 		return result;
 	}
 
@@ -263,8 +264,7 @@ public class Vec3D
 		rotate2D(c, s);
 	}
 
-	public final void rotateAround2D(final double angleRadians,
-			final Vec3D centerOfRotation)
+	public final void rotateAround2D(final double angleRadians, final Vec3D centerOfRotation)
 	{
 		x -= centerOfRotation.x;
 		y -= centerOfRotation.y;
@@ -296,8 +296,7 @@ public class Vec3D
 	@Override
 	public int hashCode()
 	{
-		return Double.hashCode(x) + Double.hashCode(y) * 37
-				+ Double.hashCode(z) * 10001;
+		return Double.hashCode(x) + Double.hashCode(y) * 37 + Double.hashCode(z) * 10001;
 	}
 
 }
