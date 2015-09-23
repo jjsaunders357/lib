@@ -60,8 +60,8 @@ public class Vec3D implements Serializable
 	public static double distanceSquared(final Vec3D v1, final Vec3D v2)
 	{
 		double xdiff = (v1.x - v2.x);
-		double ydiff = (v1.x - v2.x);
-		double zdiff = (v1.x - v2.x);
+		double ydiff = (v1.y - v2.y);
+		double zdiff = (v1.z - v2.z);
 		return xdiff * xdiff + ydiff * ydiff + zdiff * zdiff;
 	}
 
@@ -185,11 +185,11 @@ public class Vec3D implements Serializable
 		this.z -= z;
 	}
 
-	public final void subFromScaledVector(final Vec3D vec, final double scaleVec)
+	public final void subFromScaledVector(final Vec3D vec, final double scale)
 	{
-		x -= vec.x * scaleVec;
-		y -= vec.y * scaleVec;
-		z -= vec.z * scaleVec;
+		x -= vec.x * scale;
+		y -= vec.y * scale;
+		z -= vec.z * scale;
 	}
 
 	public final void subFrom(final Vec3D vec)
@@ -204,6 +204,11 @@ public class Vec3D implements Serializable
 		x *= scale;
 		y *= scale;
 		z *= scale;
+	}
+
+	public double dotBy(Vec3D vec)
+	{
+		return x * vec.x + y * vec.y + z * vec.z;
 	}
 
 	/**
@@ -237,6 +242,14 @@ public class Vec3D implements Serializable
 	// **************************2D special functions**************************
 	// These all operate on the vector's x,y components, treating them as though
 	// they are in a plane.
+
+	public final void rotate902D()
+	{
+		double temp = x;
+		x = y;
+		y = -temp;
+	}
+
 	public final double getAngle2D()
 	{
 		return (double) Math.atan2(y, x);
