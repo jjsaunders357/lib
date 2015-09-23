@@ -1,7 +1,7 @@
 package com.pheiffware.lib.geometry.intersect;
 
 import com.pheiffware.lib.geometry.Vec3D;
-import com.pheiffware.lib.geometry.shapes.OrientedLineSegment;
+import com.pheiffware.lib.geometry.shapes.LineSegment;
 import com.pheiffware.lib.geometry.shapes.Sphere;
 
 public class IntersectCalc
@@ -47,7 +47,7 @@ public class IntersectCalc
 	 * @return
 	 */
 	public static IntersectionInfo calcIntersect2D(
-			OrientedLineSegment lineSegment, Sphere sphere)
+			LineSegment lineSegment, Sphere sphere)
 	{
 		// All references to line refer to the infinite line as opposed to the
 		// segment.

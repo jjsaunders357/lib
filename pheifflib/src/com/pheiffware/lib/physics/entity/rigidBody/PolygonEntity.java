@@ -8,7 +8,7 @@ import com.pheiffware.lib.geometry.Vec3D;
 import com.pheiffware.lib.geometry.intersect.IntersectCalc;
 import com.pheiffware.lib.geometry.intersect.IntersectionInfo;
 import com.pheiffware.lib.geometry.shapes.Sphere;
-import com.pheiffware.lib.geometry.shapes.OrientedLineSegment;
+import com.pheiffware.lib.geometry.shapes.LineSegment;
 import com.pheiffware.lib.physics.InteractionException;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntity;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntityCollision;
@@ -23,7 +23,7 @@ public class PolygonEntity extends PhysicalEntity
 			PolygonEntity polygonEntity, SphereEntity sphereEntity,
 			double elapsedTime)
 	{
-		for (OrientedLineSegment lineSegment : polygonEntity.lineSegments)
+		for (LineSegment lineSegment : polygonEntity.lineSegments)
 		{
 			IntersectionInfo pointOfImpact = IntersectCalc.calcIntersect2D(
 					lineSegment, new Sphere(sphereEntity.getCenter(),
@@ -41,7 +41,7 @@ public class PolygonEntity extends PhysicalEntity
 	private final Vec3D[] points;
 
 	// A set of lineSegment objects (used for collisions)
-	private final OrientedLineSegment[] lineSegments;
+	private final LineSegment[] lineSegments;
 
 	private BoundingSphere boundingSphere;
 
@@ -50,13 +50,13 @@ public class PolygonEntity extends PhysicalEntity
 	{
 		super(velocity, mass, coefficientOfRestitution);
 		this.points = copyPoints(points);
-		lineSegments = new OrientedLineSegment[points.length];
+		lineSegments = new LineSegment[points.length];
 		for (int i = 0; i < points.length - 1; i++)
 		{
-			lineSegments[i] = new OrientedLineSegment(this.points[i],
+			lineSegments[i] = new LineSegment(this.points[i],
 					this.points[i + 1], -1);
 		}
-		lineSegments[lineSegments.length - 1] = new OrientedLineSegment(
+		lineSegments[lineSegments.length - 1] = new LineSegment(
 				this.points[points.length - 1], this.points[0], 1);
 		calcBoundingVolume();
 	}
@@ -136,7 +136,7 @@ public class PolygonEntity extends PhysicalEntity
 		boundingSphere.move(tx, ty, tz);
 	}
 
-	public final OrientedLineSegment[] getLineSegments()
+	public final LineSegment[] getLineSegments()
 	{
 		return lineSegments;
 	}

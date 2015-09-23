@@ -8,7 +8,7 @@ import com.pheiffware.lib.geometry.Vec3D;
 import com.pheiffware.lib.geometry.intersect.IntersectCalc;
 import com.pheiffware.lib.geometry.intersect.IntersectionInfo;
 import com.pheiffware.lib.geometry.shapes.Sphere;
-import com.pheiffware.lib.geometry.shapes.OrientedLineSegment;
+import com.pheiffware.lib.geometry.shapes.LineSegment;
 import com.pheiffware.lib.physics.InteractionException;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntity;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntityCollision;
@@ -33,13 +33,13 @@ public abstract class LineSegmentEntity extends PhysicalEntity
 		}
 	}
 
-	private final OrientedLineSegment lineSegment;
+	private final LineSegment lineSegment;
 
 	public LineSegmentEntity(Vec3D p1, Vec3D p2, int normalSide,
 			Vec3D velocity, double mass, double coefficientOfRestitution)
 	{
 		super(velocity, mass, coefficientOfRestitution);
-		lineSegment = new OrientedLineSegment(p1, p2, normalSide);
+		lineSegment = new LineSegment(p1, p2, normalSide);
 	}
 
 	/*
@@ -54,7 +54,7 @@ public abstract class LineSegmentEntity extends PhysicalEntity
 		lineSegment.p2.addTo(x, y, z);
 	}
 
-	public final OrientedLineSegment getLineSegment()
+	public final LineSegment getLineSegment()
 	{
 		return lineSegment;
 	}
