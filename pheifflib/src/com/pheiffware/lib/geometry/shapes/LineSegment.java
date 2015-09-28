@@ -9,7 +9,7 @@ import com.pheiffware.lib.geometry.Vec3D;
 /**
  * Represents a line segment between p1 and p2.
  */
-public final class LineSegment extends BaseLineSegment
+public final class LineSegment extends SimpleLineSegment
 {
 	// Which side the line is "facing". Rotates normal this angle from the
 	// tangent
@@ -24,13 +24,14 @@ public final class LineSegment extends BaseLineSegment
 	// Length
 	public double length;
 
+	public LineSegment(double x1, double y1, double x2, double y2)
+	{
+		this(new Vec3D(x1, y1, 0), new Vec3D(x2, y2, 0));
+	}
+
 	public LineSegment(Vec3D p1, Vec3D p2)
 	{
-		super(p1, p2);
-		this.normalSide = 1;
-		direction = new Vec3D(0, 0, 0);
-		unitNormal = new Vec3D(0, 0, 0);
-		reshape();
+		this(p1, p2, 1);
 	}
 
 	public LineSegment(Vec3D p1, Vec3D p2, int normalSide)
@@ -70,6 +71,30 @@ public final class LineSegment extends BaseLineSegment
 		return Vec3D.subDot(point, p1, direction);
 	}
 
+	/**
+	 * Given a point, it calculates its "parametric position" on the line.
+	 * p1 == 0
+	 * p2 == 1
+	 * If the given point in not on the line, its projection on the line is used.
+	 * @param point
+	 * @return
+	 */
+	public double getParametricPosition(Vec3D point)
+	{
+		return Vec3D.subDot(point, p1, direction) / length;
+	}
+
+	/**
+	 * Tests if the point's position, projected on the line, is within p1 and p2.
+	 * @param point
+	 * @return
+	 */
+	public boolean isProjectedPointOnLineSegment(Vec3D point)
+	{
+		double parametricPosition = getParametricPosition(point);
+		return parametricPosition >= 0 && parametricPosition <= 1.0;
+	}
+
 	public final double getLength()
 	{
 		return length;
@@ -84,4 +109,5 @@ public final class LineSegment extends BaseLineSegment
 	{
 		return unitNormal;
 	}
+
 }
