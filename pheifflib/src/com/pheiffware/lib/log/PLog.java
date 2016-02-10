@@ -7,13 +7,13 @@ package com.pheiffware.lib.log;
  * @author Steve
  *
  */
-public class Log
+public class PLog
 {
 	private static LogHandler instance = new NullLogHandler();
 
 	public static void install(LogHandler instance)
 	{
-		Log.instance = instance;
+		PLog.instance = instance;
 	}
 
 	public static void error(String message, Exception e)

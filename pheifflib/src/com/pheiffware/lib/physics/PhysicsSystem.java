@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import com.pheiffware.lib.log.Log;
+import com.pheiffware.lib.log.PLog;
 import com.pheiffware.lib.physics.entity.Entity;
 import com.pheiffware.lib.physics.entity.physicalEntity.PhysicalEntity;
 import com.pheiffware.lib.simulation.Simulation;
@@ -58,13 +58,13 @@ public class PhysicsSystem implements Simulation<List<Entity>>
 			}
 			catch (InteractionException e)
 			{
-				Log.error("FAIL!", e);
+				PLog.error("FAIL!", e);
 				System.exit(0);
 			}
 		}
 		catch (Exception e)
 		{
-			Log.error("FAIL!", e);
+			PLog.error("FAIL!", e);
 			System.exit(0);
 		}
 	}
@@ -95,7 +95,7 @@ public class PhysicsSystem implements Simulation<List<Entity>>
 		}
 		catch (Exception e)
 		{
-			Log.error("FAIL!", e);
+			PLog.error("FAIL!", e);
 			System.exit(0);
 			return new ArrayList<Entity>();
 		}
