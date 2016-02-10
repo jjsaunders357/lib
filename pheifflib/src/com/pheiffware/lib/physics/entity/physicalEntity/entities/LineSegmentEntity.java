@@ -2,7 +2,7 @@
  * Created by Stephen Pheiffer.
  * Do not edit, distribute, modify or use without his permission.
  */
-package com.pheiffware.lib.physics.entity.rigidBody;
+package com.pheiffware.lib.physics.entity.physicalEntity.entities;
 
 import com.pheiffware.lib.geometry.Vec3D;
 import com.pheiffware.lib.geometry.intersect.IntersectCalc;
