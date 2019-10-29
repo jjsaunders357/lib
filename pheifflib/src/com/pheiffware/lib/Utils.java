@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
@@ -25,12 +26,53 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  */
 public class Utils
 {
+	/**
+	 * Loads and returns a list of arrays of strings from a CSV file.
+	 * @param resourceName
+	 * @param numColumns
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String[]> loadCSV(String resourceName, int numColumns) throws IOException
+	{
+		List<String[]> rows = new ArrayList<>();
+		try (InputStream in = Utils.class.getResourceAsStream(resourceName); BufferedReader reader = new BufferedReader(new InputStreamReader(in));)
+		{
+			String readLine = reader.readLine();
+			while (readLine != null)
+			{
+				String[] row = readLine.split("\\s*,\\s*");
+				rows.add(row);
+				readLine = reader.readLine();
+			}
+		}
+		return rows;
+	}
+
+	public static List<Double> loadFileArray(String path) throws IOException
+	{
+		List<Double> data = new ArrayList<>();
+		try (InputStream in = Utils.class.getResourceAsStream("/com/pheiffware/" + path);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(in));)
+		{
+			String readLine = reader.readLine();
+			while (readLine != null)
+			{
+				data.add(Double.parseDouble(readLine));
+				readLine = reader.readLine();
+			}
+			return data;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <T> T loadObj(String path, Class<T> cls) throws FileNotFoundException, IOException, ClassNotFoundException
 	{
@@ -116,4 +158,31 @@ public class Utils
 	{
 		return (System.nanoTime() - earlierTimeStamp) / 1000000000.0;
 	}
+
+	public static final void printArray(double[] array)
+	{
+		printArray(array, 3);
+	}
+
+	public static final void printArray(double[] array, int decimalPlaces)
+	{
+
+		for (int i = 0; i < array.length - 1; i++)
+		{
+			System.out.print(String.format("%." + decimalPlaces + "f", array[i]));
+			System.out.print(",");
+		}
+		System.out.println(array[array.length - 1]);
+	}
+
+	public static final void printArray(int[] array)
+	{
+		for (int i = 0; i < array.length - 1; i++)
+		{
+			System.out.print(array[i]);
+			System.out.print(",");
+		}
+		System.out.println(array[array.length - 1]);
+	}
+
 }
